@@ -10,9 +10,13 @@ app.use(cors())
 
 const productSchema= require("./controllers/product.controller")
 const productListSchema= require("./controllers/productlist.controller")
+const cartSchema= require("./controllers/cart.controller")
+const userSchema= require("./controllers/user.controller")
 
 app.use("/products",productSchema)
 app.use("/productlist",productListSchema)
+app.use("/cart",cartSchema)
+app.use("/user",userSchema)
 
 
 // https://blooming-refuge-71619.herokuapp.com/ (continue)
