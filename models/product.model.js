@@ -9,10 +9,10 @@ const productSchema = new mongoose.Schema({
     discount: {type: Number, required: true},
     description: {type: String, required: true},
     image: [
-        {type: URL, required: true},
-        {type: URL, required: true},
-        {type: URL, required: true},
-        {type: URL, required: true}
+        {type: String, required: true},
+        {type: String, required: true},
+        {type: String, required: true},
+        {type: String, required: true}
     ]
 })
 

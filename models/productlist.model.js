@@ -2,11 +2,9 @@ const mongoose = require('mongoose')
 
 
 const productListSchema = new mongoose.Schema({
-    title: {type: String, required: true},
-    genre: {type: String, required: true},
-    year: {type: Number, required: true},
-    rating: {type: Number, required: true}
-    
+    cat: {type: String, required: true},
+    name: {type: String, required: true},
+    image: {type: Number, required: true}
 },{
     versionKey:false,
     timestamps:true,
