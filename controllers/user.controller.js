@@ -1,14 +1,16 @@
 const express = require('express');
 
-const Productlist = require('../models/productlist.model')
+const User = require('../models/user.model')
 
 const router = express.Router()
+
 
 //Post Data
 router.post("/",async(req,res)=>{
     try {
-        const products = await Productlist.create(req.body);
-        return res.send(products)
+        const users = await User.create(req.body);
+
+        return res.send(users)
     } catch (error) {
         return res.send(error.message)
     }
@@ -17,18 +19,20 @@ router.post("/",async(req,res)=>{
 //Get all
 router.get("/",async(req,res)=>{
     try {
-        const products = await Productlist.find().lean().exec()
-        return res.send(products)
+        const users = await User.find().lean().exec()
+
+        return res.send(users)
     } catch (error) {
         return res.send(error.message)
     }
 })
 
+
 // Get Particulaar
 router.get("/:id",async (req,res)=>{
     try{
-        const productlist= await Productlist.findById(req.params.id).lean().exec()
-        return res.send(productlist);
+        const user= await User.findById(req.params.id).lean().exec()
+        return res.send(user);
     }
     catch(err){
         console.log(res);
@@ -37,10 +41,10 @@ router.get("/:id",async (req,res)=>{
 // Patch
 router.patch("/:id",async (req,res)=>{
     try{
-        const productlist= await Productlist.findByIdAndUpdate(req.params.id,req.body,{
+        const user= await User.findByIdAndUpdate(req.params.id,req.body,{
             new: true
         }).lean().exec()
-        return res.send(productlist);
+        return res.send(user);
     }
     catch(err){
         console.log(res);
@@ -50,12 +54,14 @@ router.patch("/:id",async (req,res)=>{
 // Delete
 router.delete("/:id",async (req,res)=>{
     try{
-        const productlist= await Productlist.findByIdAndDelete(req.params.id).lean().exec()
-        return res.send(productlist);
+        const user= await User.findByIdAndDelete(req.params.id).lean().exec()
+        return res.send(user);
     }
     catch(err){
         console.log(res);
     }
 })
+
+
 
 module.exports = router
