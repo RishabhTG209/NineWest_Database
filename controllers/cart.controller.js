@@ -1,89 +1,86 @@
-const express = require('express');
+const express= require("express");
 
-const Cart = require('../models/cart.model')
+const router = express.Router();
+const cart = require("../models/cart.model")
 
-const router = express.Router()
+router.get("/:id", async (req,res)=>{
+    try{
+        const cart_data= await cart.find({user_id:req.params.id}).populate("user_id product_id").lean().exec()
 
-// Post Data
-// router.post("/",async(req,res)=>{
-//     try {
-//         const carts = await Cart.create(req.body);
+        // let total_cart_count= cart_data.reduce(function(acc,curr){
+        //      return acc+curr.qty
+        //  },0)
 
-//         return res.send(carts)
-//     } catch (error) {
-//         return res.send(error.message)
-//     }
-// })
+        //  let total_cart_price= cart_data.reduce(function(acc,curr){
+        //     return acc+curr.product_id.price
+        // },0)
+
+        res.status(200).send(cart_data)
+
+        // {"total_cart_count":total_cart_count,"total_cart_price":total_cart_price}
+
+    }catch(e){
+
+        res.send(e.message)
+
+    }
+
+});
+
 
 router.post("/additem/:user_id", async (req,res)=>{
 
     try{
         const product_id=req.body.product_id;
         const user_id = req.params.user_id;
+
         const cart_item= await cart.findOne({"user_id":user_id,"product_id":product_id}).lean().exec();
+
+        
+         
         if(cart_item){
 
             if(req.query.operation=="dec"){
-
                 await cart.findByIdAndUpdate(cart_item._id,{$inc:{qty:-1}});
-             
+                if(cart_item.qty<=0){
+                    await cart.findByIdAndDelete(cart_item._id);
+                }
             }
-            else{
+            else{               
                 await cart.findByIdAndUpdate(cart_item._id,{$inc:{qty:1}});
+              
             }
-            res.end() ; 
+            res.end() ;   
         }
-        else{ 
+        else{
            await cart.create(req.body);
            res.end()
          }
     }catch(e){
+
         res.send(e.message)
+
     }
+
 });
 
-//Get All
-router.get("/",async(req,res)=>{
-    try {
-        const carts = await Cart.find().lean().exec()
 
-        return res.send(carts)
-    } catch (error) {
-        return res.send(error.message)
-    }
-})
+router.delete("/:product_id" ,async (req,res)=>{
 
-// Get Particulaar
-router.get("/:id",async (req,res)=>{
     try{
-        const cart= await Cart.findById(req.params.id).lean().exec()
-        return res.send(cart);
+
+        let product_id = req.params.product_id;
+        let user_id =req.body.user_id;
+        let item =  await cart.findOne({"product_id":product_id ,"user_id":user_id});
+
+        await cart.findByIdAndDelete(item._id);
+
+        res.end();
+
+    }catch(err){
+        res.send("error while deleting item",err.message)
     }
-    catch(err){
-        console.log(res);
-    }
-})
-// Patch
-router.patch("/:id",async (req,res)=>{
-    try{
-        const cart= await Cart.findByIdAndUpdate(req.params.id,req.body,{
-            new: true
-        }).lean().exec()
-        return res.send(cart);
-    }
-    catch(err){
-        console.log(res);
-    }
+
 })
 
-// Delete
-router.delete("/:id",async (req,res)=>{
-    try{
-        const cart= await Cart.findByIdAndDelete(req.params.id).lean().exec()
-        return res.send(cart);
-    }
-    catch(err){
-        console.log(res);
-    }
-})
-module.exports = router
+module.exports=router;

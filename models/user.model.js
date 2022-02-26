@@ -1,17 +1,22 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+
 const bcrypt= require("bcryptjs");
 
-const userSchema = new mongoose.Schema({
-    fname: {type: String, required: true},
-    lname: {type: String, required: true},
-    email: {type: String, required: true},
-    password: {type: String, required: true},
-    cartItem: {
-        type:mongoose.Schema.Types.ObjectId, ref:"cart",required:true
-    }
-})
+const user_schema = new mongoose.Schema({
 
-userSchema.pre("save", function(next){
+    first_name:{type:String,required:true },
+
+    last_name:{type:String, required:true},
+    
+   email:{type:String, required:true},
+
+   password:{type:String, required:true},
+},{
+    versionKey:false,
+    timestamps:true,
+});
+
+user_schema.pre("save", function(next){
     if(!this.isModified("password"))return next();
 
 
@@ -20,9 +25,9 @@ userSchema.pre("save", function(next){
     return next();
 
 });
-
-userSchema.methods.checkPassword = function (password) {
+user_schema.methods.checkPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
-  };
+};
 
-module.exports = mongoose.model('user',userSchema)
+const user = mongoose.model("user",user_schema)
+module.exports = user;
