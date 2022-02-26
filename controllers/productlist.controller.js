@@ -15,9 +15,18 @@ router.post("/",async(req,res)=>{
 })
 
 //Get all
-router.get("/all",async(req,res)=>{
+router.get("/",async(req,res)=>{
     try {
         const products = await Productlist.find().lean().exec()
+        return res.send(products)
+    } catch (error) {
+        return res.send(error.message)
+    }
+})
+
+router.get("/:category",async(req,res)=>{
+    try {
+        const products = await Productlist.find({category: req.params.category}).lean().exec()
         return res.send(products)
     } catch (error) {
         return res.send(error.message)
