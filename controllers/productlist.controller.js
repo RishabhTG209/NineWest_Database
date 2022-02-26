@@ -15,7 +15,7 @@ router.post("/",async(req,res)=>{
 })
 
 //Get all
-router.get("/",async(req,res)=>{
+router.get("/all",async(req,res)=>{
     try {
         const products = await Productlist.find().lean().exec()
         return res.send(products)
