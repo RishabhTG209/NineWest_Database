@@ -42,7 +42,7 @@ router.post("/additem/:user_id", async (req,res)=>{
 
             if(req.query.operation=="dec"){
                 await cart.findByIdAndUpdate(cart_item._id,{$inc:{qty:-1}});
-                if(cart_item.qty<=0){
+                if(cart_item.qty<=1){
                     await cart.findByIdAndDelete(cart_item._id);
                 }
             }
@@ -76,7 +76,6 @@ router.delete("/:product_id" ,async (req,res)=>{
         await cart.findByIdAndDelete(item._id);
 
         res.end();
-
     }catch(err){
         res.send("error while deleting item",err.message)
     }
